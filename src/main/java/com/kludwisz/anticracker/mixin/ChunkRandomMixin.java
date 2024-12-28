@@ -13,21 +13,21 @@ import java.util.Random;
 public class ChunkRandomMixin extends Random {
     @Inject(at = @At("RETURN"), method = "setPopulationSeed", cancellable = true)
     private void popseedRet(CallbackInfoReturnable<Long> cir) {
-        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash();
+        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash(2);
         setSeed(scrambledSeed);
         cir.setReturnValue(scrambledSeed);
     }
 
     @Inject(at = @At("RETURN"), method = "setRegionSeed", cancellable = true)
     private void regionseedRet(CallbackInfoReturnable<Long> cir) {
-        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash();
+        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash(3);
         setSeed(scrambledSeed);
         cir.setReturnValue(scrambledSeed);
     }
 
     @Inject(at = @At("RETURN"), method = "setCarverSeed", cancellable = true)
     private void carverseedRet(CallbackInfoReturnable<Long> cir) {
-        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash();
+        long scrambledSeed = cir.getReturnValue() ^ SeedHash.getWorldSeedHash(4);
         setSeed(scrambledSeed);
         cir.setReturnValue(scrambledSeed);
     }

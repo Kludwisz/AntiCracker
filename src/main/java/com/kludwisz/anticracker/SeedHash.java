@@ -13,13 +13,13 @@ public class SeedHash {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final boolean ENABLED = true;
-    private static final int ITERATIONS = 127;
-    // 127 iterations is probably already overkill; as far as I know,
-    // even 1 iteration of the algorithm has never been reversed as of 9/2024.
+    // pudy248 note: the access method is totally unsafe, just remember to not ask for an index bigger than this number :P
+    private static final int NUM_HASHES = 5;
+    private static final int ITERS_PER_HASH = 32;
 
     // -------------------------------------------------------------------
-
-    private static final AtomicLong result = new AtomicLong(0L);
+    // pudy248 note: it doesn't matter if these are atomic, we never do any operations that would require it
+    private static final long[] hashes = new int[NUM_HASHES];
 
     /**
      * Pre-calculates a hash of the world seed by repeatedly applying a hashing function
@@ -32,12 +32,14 @@ public class SeedHash {
 
         long hsh = worldSeed;
 
-        for (int i = 0; i < ITERATIONS; i++) {
-            hsh = xrsr128pp(hsh);
-        }
+        for (int j = 0; j < NUM_HASHES; j++) {
+            for (int i = 0; i < ITERS_PER_HASH; i++) {
+                hsh = xrsr128pp(hsh);
+            }
+            hashes[j] = hsh;
 
-        LOGGER.info("[AntiCracker] Calculated world seed hash: {}", hsh);
-        result.set(hsh);
+            LOGGER.info("[AntiCracker] Calculated world seed hash {}: {}", j, hsh);
+        }
     }
 
     /**
@@ -65,9 +67,11 @@ public class SeedHash {
     }
 
     /**
+     * @param index The index of the hash to use.
      * @return The precalculated hash of the world seed.
      */
-    public static long getWorldSeedHash() {
-        return result.get();
+    public static long getWorldSeedHash(int index) {
+        // if (index > NUM_HASHES) halt_and_catch_fire();
+        return hashes[index];
     }
 }

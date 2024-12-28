@@ -14,7 +14,7 @@ import java.util.Random;
 public class StrongholdSeedMixin {
     @Redirect(at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V"), method = "method_28509")
     private void setStrongholdSeed(Random instance, long seed) {
-        long scrambledSeed = Long.rotateLeft(SeedHash.getWorldSeedHash(), 17) ^ seed;
+        long scrambledSeed = SeedHash.getWorldSeedHash(1) ^ seed;
         instance.setSeed(scrambledSeed);
     }
 }

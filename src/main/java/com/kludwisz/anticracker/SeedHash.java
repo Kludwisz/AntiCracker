@@ -19,7 +19,7 @@ public class SeedHash {
 
     // -------------------------------------------------------------------
     // pudy248 note: it doesn't matter if these are atomic, we never do any operations that would require it
-    private static final long[] hashes = new int[NUM_HASHES];
+    private static final long[] hashes = new long[NUM_HASHES];
 
     /**
      * Pre-calculates a hash of the world seed by repeatedly applying a hashing function

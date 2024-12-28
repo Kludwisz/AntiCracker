@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class EndPillarSeedMixin {
     @ModifyVariable(method = "getSpikes", at = @At("STORE"), ordinal = 0)
     private static long modifyPillarSeed(long l) {
-        return l ^ SeedHash.getWorldSeedHash(0);
+        return SeedHash.scramble(l, SeedHash.Type.PILLARS);
     }
 }

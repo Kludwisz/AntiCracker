@@ -3,8 +3,6 @@ package com.kludwisz.anticracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * This class is used to precalculate a hash of the world seed, then use it as a constant
  * in code segments that are vulnerable to seed cracking.
@@ -13,8 +11,7 @@ public class SeedHash {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final boolean ENABLED = true;
-    // pudy248 note: the access method is totally unsafe, just remember to not ask for an index bigger than this number :P
-    private static final int NUM_HASHES = 5;
+    private static final int NUM_HASHES = Type.values().length;
     private static final int ITERS_PER_HASH = 32;
 
     // -------------------------------------------------------------------
@@ -70,8 +67,33 @@ public class SeedHash {
      * @param index The index of the hash to use.
      * @return The precalculated hash of the world seed.
      */
+    @Deprecated
     public static long getWorldSeedHash(int index) {
         // if (index > NUM_HASHES) halt_and_catch_fire();
         return hashes[index];
+    }
+
+    /**
+     * Scrambles a seed using a simple hash-based key derivation function.
+     * @param seed The seed to scramble.
+     * @param type The type of hash to use.
+     * @return The scrambled seed.
+     */
+    public static long scramble(long seed, Type type) {
+        return xrsr128pp(seed + type.toHashCode());
+    }
+
+    // -------------------------------------------------------------------
+
+    public enum Type {
+        PILLARS,
+        STRONGHOLDS,
+        POPULATION,
+        REGION_STRUCTURES,
+        CARVERS;
+
+        public long toHashCode() {
+            return hashes[this.ordinal()];
+        }
     }
 }
